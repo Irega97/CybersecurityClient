@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "CybersecurityClient"
+    }
+  },
+  "defaultProject": "CybersecurityClient",
+  "cli": {
+    "analytics": false
+  }
 }
