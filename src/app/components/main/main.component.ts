@@ -21,12 +21,12 @@ export class MainComponent implements OnInit {
   public postMensaje(event){
     console.log(this.name)
     this.MainService.postMensaje(this.name).subscribe(
-      res=>console.log(res),
-      err=>console.log(err)
+      res => console.log(res),
+      err => console.log(err)
     )
   }
 
-  public getMensaje(){   //obtengo la frase que viene del servidor
+  public getMensaje(){
     this.MainService.getMensaje().subscribe(
       (data) => {
         this.frase = data;
@@ -34,15 +34,16 @@ export class MainComponent implements OnInit {
 
       },
       (err) => {
-        console.log("err", err);
+        console.log('err', err);
       }
-    )  //el subject service es el declarado arriba en private
+    );
   }
 
-  public deleteMensaje(){   //obtengo la frase que viene del servidor
+  public deleteMensaje(){
     setTimeout(
       () => {
-        this.frase = ""}, 3000);
+        this.frase = '';
+      }, 3000);
     }
 
 }
