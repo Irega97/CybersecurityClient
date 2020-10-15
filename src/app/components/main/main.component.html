@@ -1,13 +1,15 @@
 <h2>Ciberseguridad</h2>
 <form name = 'mensaje' ((ngSubmit)="postMensaje($event)")>
-    <p>
+    <form>
     <label>Nombre:
         <p type="text" name="name" placeholder="mensaje" >
         <button type ="submit">Enviar</button>
     </p>
+    </label>
+    </form>
 </form>
 
 <div>
-    <button (click)="getMensaje(); delete()">Mostrar mensaje</button>
-    <h4>{{frese}}</h4>
+    <button (click)="getMensaje(); deleteMensaje()">Mostrar mensaje</button>
+    <h4>{{frase}}</h4>
 </div>
