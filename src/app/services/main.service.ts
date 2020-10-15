@@ -16,10 +16,10 @@ export class MainService {
     this.env = new Environment();
    }
 
-   postMensaje(addMsg: string){
-     let c = typeof(addMsg);
+   postMensaje(text: string){
+     let c = typeof(text);
      console.log(c);
-     return this.http.post(this.env.urlMain + '/post', {addMsg, headers:this.headers});
+     return this.http.post(this.env.urlMain + '/post', {text, headers:this.headers});
    }
 
    getMensaje(): Observable<string>{

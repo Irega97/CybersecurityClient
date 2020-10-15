@@ -1,3 +1,4 @@
+import { bodyParser } from 'body-parser';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
