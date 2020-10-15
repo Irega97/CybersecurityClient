@@ -1,1 +1,13 @@
 <h2>Ciberseguridad</h2>
+<form name = 'mensaje' ((ngSubmit)="postMensaje($event)")>
+    <p>
+    <label>Nombre:
+        <p type="text" name="name" placeholder="mensaje" >
+        <button type ="submit">Enviar</button>
+    </p>
+</form>
+
+<div>
+    <button (click)="getMensaje(); delete()">Mostrar mensaje</button>
+    <h4>{{frese}}</h4>
+</div>
