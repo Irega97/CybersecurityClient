@@ -1,7 +1,10 @@
+import { AESEncDecService } from './../../services/aes-enc-dec.service';
 import { bodyParser } from 'body-parser';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import * as CryptoJS from 'crypto-js';
+
 
 @Component({
   selector: 'app-main',
@@ -14,17 +17,18 @@ export class MainComponent implements OnInit {
   frase: string;
   timeout;
 
-  constructor(private MainService: MainService) { }
+  constructor(private MainService: MainService, private AESEncDecService: AESEncDecService) { }
 
   ngOnInit(): void {
   }
 
   public postMensaje(event){
-    console.log(this.name)
-    this.MainService.postMensaje(this.name).subscribe(
+    console.log(this.name);
+    const encryptedText = this.AESEncDecService.encrypt(this.name);
+    this.MainService.postMensaje(encryptedText).subscribe(
       res => console.log(res),
       err => console.log(err)
-    )
+    );
   }
 
   public getMensaje(){
@@ -47,4 +51,14 @@ export class MainComponent implements OnInit {
       }, 3000);
     }
 
+  private encryptMensaje(){
+
+  }
+
+  private decryptMensaje(){
+
+  }
+
 }
+
+
