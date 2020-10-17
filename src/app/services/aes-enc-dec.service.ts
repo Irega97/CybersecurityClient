@@ -16,7 +16,7 @@ export class AESEncDecService {
   constructor() { }
   
   encrypt(value : string) : string{
-    return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
+    return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString(CryptoJS.enc.Hex);
   }
 
   decrypt(textToDecrypt : string){

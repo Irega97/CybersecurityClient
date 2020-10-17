@@ -34,7 +34,8 @@ export class MainComponent implements OnInit {
   public getMensaje(){
     this.MainService.getMensaje().subscribe(
       (data) => {
-        this.frase = data;
+        //this.frase= data;
+        this.frase = this.AESEncDecService.decrypt(data).toString(CryptoJS.enc.Utf8);
         console.log(this.frase);
 
       },
@@ -50,14 +51,6 @@ export class MainComponent implements OnInit {
         this.frase = '';
       }, 3000);
     }
-
-  private encryptMensaje(){
-
-  }
-
-  private decryptMensaje(){
-
-  }
 
 }
 
