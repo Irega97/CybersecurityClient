@@ -15,7 +15,6 @@ export class MainComponent implements OnInit {
   frase: string;
   timeout;
   hola;
-  frase1;
 
   constructor(private MainService: MainService, private AESEncDecService: AESEncDecService) { }
 
@@ -28,7 +27,7 @@ export class MainComponent implements OnInit {
       res => {
         console.log(res);
         this.hola = res;
-        this.frase1 = this.hola.text;
+        this.frase = this.hola.text;
       },
       err => console.log(err)
     );
