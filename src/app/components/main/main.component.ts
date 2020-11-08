@@ -1,9 +1,7 @@
+import * as CryptoJS from 'crypto-js';
 import { AESEncDecService } from './../../services/aes-enc-dec.service';
-import { bodyParser } from 'body-parser';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import * as CryptoJS from 'crypto-js';
 
 
 @Component({
@@ -23,7 +21,6 @@ export class MainComponent implements OnInit {
   }
 
   public postMensaje(event){
-    console.log(this.name);
     const encryptedText = this.AESEncDecService.encrypt(this.name);
     this.MainService.postMensaje(encryptedText).subscribe(
       res => console.log(res),
@@ -34,7 +31,6 @@ export class MainComponent implements OnInit {
   public getMensaje(){
     this.MainService.getMensaje().subscribe(
       (data) => {
-        //this.frase= data;
         this.frase = this.AESEncDecService.decrypt(data).toString(CryptoJS.enc.Utf8);
         console.log(this.frase);
 
