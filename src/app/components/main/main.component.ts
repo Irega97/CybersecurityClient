@@ -11,15 +11,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  name: string;
-  frase: string;
-  timeout;
-  hola;
-
   constructor(private MainService: MainService, private AESEncDecService: AESEncDecService) { }
 
   ngOnInit(): void {
   }
+
+  //************************** AES *******************************
+
+  name: string;
+  frase: string;
+  timeout;
+  hola;
 
   public postMensaje(event){
     const encryptedText = this.AESEncDecService.encrypt(this.name);
@@ -50,7 +52,18 @@ export class MainComponent implements OnInit {
       () => {
         this.frase = '';
       }, 3000);
-    }
+  }
+
+  //**************************************************************************
+  //******************************** RSA *************************************
+
+  public postMensajeRSA(event){
+
+  }
+
+  public getMensajeRSA(){
+
+  }
 
 }
 

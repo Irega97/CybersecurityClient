@@ -1,4 +1,5 @@
-<h2>Ciberseguridad</h2>
+<h1>Ciberseguridad</h1>
+<h2>AES ALGORITHM</h2>
 <form name = 'mensaje' (ngSubmit)="postMensaje($event); deleteMensaje()">
     
 <p>
@@ -15,6 +16,26 @@
 
 <div>
     <button (click)="getMensaje(); deleteMensaje()">Mostrar mensaje</button>
+    <h4>{{frase}}</h4>
+</div>
+
+<h2>RSA ENCRYPTATION</h2>
+<form name = 'mensaje' (ngSubmit)="postMensajeRSA($event); deleteMensaje()">
+    
+<p>
+    <label>Nombre:
+    <input type="text" name="mensaje" placeholder="Mensaje" [(ngModel)]="name">  
+    </label>
+</p>
+
+<p>
+    <button type ="submit">Enviar</button>
+</p>
+    
+</form>
+
+<div>
+    <button (click)="getMensajeRSA(); deleteMensaje()">Mostrar mensaje</button>
     <h4>{{frase}}</h4>
 </div>
 
