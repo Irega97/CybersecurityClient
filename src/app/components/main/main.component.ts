@@ -14,6 +14,8 @@ export class MainComponent implements OnInit {
   name: string;
   frase: string;
   timeout;
+  hola;
+  frase1;
 
   constructor(private MainService: MainService, private AESEncDecService: AESEncDecService) { }
 
@@ -23,7 +25,11 @@ export class MainComponent implements OnInit {
   public postMensaje(event){
     const encryptedText = this.AESEncDecService.encrypt(this.name);
     this.MainService.postMensaje(encryptedText).subscribe(
-      res => console.log(res),
+      res => {
+        console.log(res);
+        this.hola = res;
+        this.frase1 = this.hola.text;
+      },
       err => console.log(err)
     );
   }
@@ -31,9 +37,8 @@ export class MainComponent implements OnInit {
   public getMensaje(){
     this.MainService.getMensaje().subscribe(
       (data) => {
-        this.frase = this.AESEncDecService.decrypt(data).toString(CryptoJS.enc.Utf8);
+        this.frase = this.AESEncDecService.decrypt(data).toString();
         console.log(this.frase);
-
       },
       (err) => {
         console.log('err', err);

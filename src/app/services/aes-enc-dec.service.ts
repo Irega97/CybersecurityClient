@@ -21,13 +21,21 @@ export class AESEncDecService {
     return dataToSend;
   }
 
-  public decrypt(cipherText: string, iv: string) {
-    console.log(`Esto es el ciphertext: ${cipherText}`);
-    var message = CryptoJS.AES.decrypt(cipherText, this.secretKey, { iv: iv }).toString(CryptoJS.enc.Utf8);
-    console.log(`Esto es el mensaje recibido desencriptado: ${message}`);
-    return message;
+  public decrypt(data) {
+    console.log('Esto es el ciphertext: ', data.dataCipher);
+    var message = CryptoJS.AES.decrypt(data.dataCipher, this.secretKey, { iv: data.iv }).toString(CryptoJS.enc.utf8);
+    var msg = this.hex_to_ascii(message);
+    console.log(`Esto es el mensaje recibido desencriptado: ${msg}`);
+    return msg;
   }
+
+  private hex_to_ascii(msg: string)
+ {
+	var hex  = msg.toString();
+	var str = '';
+	for (var n = 0; n < hex.length; n += 2) {
+		str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+    }
+	return str;
+ }
 }
-
-
-//key: <Buffer 4b 17 3f 3b 3c 23 66 67 46 95 d1 a1 7a 04 75 2a>

@@ -16,8 +16,8 @@ export class MainService {
     this.env = new Environment();
    }
 
-   postMensaje(text: object){
-     return this.http.post(this.env.urlMain + '/post', {text, headers: this.headers});
+   postMensaje(cipherText: object){
+     return this.http.post(this.env.urlMain + '/post', cipherText);
    }
 
    getMensaje(): Observable<object>{
