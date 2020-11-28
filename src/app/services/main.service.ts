@@ -17,10 +17,18 @@ export class MainService {
    }
 
    postMensaje(cipherText: object){
-     return this.http.post(this.env.urlMain + '/post', cipherText);
+     return this.http.post(this.env.urlMain + '/text/post', cipherText);
    }
 
    getMensaje(): Observable<object>{
-     return this.http.get<object>(this.env.urlMain + '/msg');
+     return this.http.get<object>(this.env.urlMain + '/text/msg');
    }
+
+  postMensajeRSA(cipherText: object){
+    return this.http.post(this.env.urlMain + '/rsa/post', cipherText);
+  }
+
+  getMensajeRSA(): Observable<object>{
+    return this.http.get<object>(this.env.urlMain + '/rsa/msg');
+  }
 }
