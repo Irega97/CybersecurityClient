@@ -20,7 +20,9 @@ export class MainComponent implements OnInit {
   //************************** AES *******************************
 
   name: string;
+  nameRSA: string;
   frase: string;
+  fraseRSA: string;
   timeout;
   hola;
 
@@ -64,7 +66,7 @@ export class MainComponent implements OnInit {
       res => {
         console.log(res);
         this.hola = res;
-        this.frase = this.hola.text;
+        this.fraseRSA = this.hola.text;
       },
       err => console.log(err)
     );
@@ -74,7 +76,7 @@ export class MainComponent implements OnInit {
   public getMensajeRSA(){ //editado por Sara (estaba vacio)
     this.MainService.getMensajeRSA().subscribe(
       (data) => {
-        this.frase = this.AESEncDecService.decrypt(data).toString();
+        this.fraseRSA = this.RsaService.decrypt(data).toString();
         console.log(this.frase);
       },
       (err) => {
