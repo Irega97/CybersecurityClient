@@ -27,7 +27,7 @@ export class RsaService {
       let msg = textToBigint(mensaje); //convierte string a bigint
 
       if (!rsa.publicKey){
-        await Promise.rsa.generateKeys(1024);
+        await rsa.generateKeys(1024);
       }
 
       let key = rsa.publicKey;
@@ -49,7 +49,7 @@ export class RsaService {
   }
 
   public async decrypt(msgEncrypted) {
-    let msgHEX = Promise.msgEncrypted.mensajeServer;
+    let msgHEX = msgEncrypted.mensajeServer;
     let msg = hexToBigint(msgHEX);
     console.log('Petición POST realizada! Mensaje cifrado:', msg);
 
@@ -63,17 +63,17 @@ export class RsaService {
 
     mensaje = BigintToText(MyRsa.decrypt(msg, d, n));
 
-    let data = {
-      mensajeCliente: bigintToHex(mensaje),
+    let dataCliente = {
+      mensaje: bigintToHex(mensaje),
       d: bigintToHex(d),
       n: bigintToHex(n)
     };
 
-    console.log("Mensaje descifrado: " + data.mensajeCliente);
-    console.log("Private exponent d: " + data.d);
-    console.log("Public modulus n: " + data.n);
+    console.log("Mensaje descifrado: " + dataCliente.mensaje);
+    console.log("Private exponent d: " + dataCliente.d);
+    console.log("Public modulus n: " + dataCliente.n);
 
-    return msg;
+    return mensaje;
   }
 
 }

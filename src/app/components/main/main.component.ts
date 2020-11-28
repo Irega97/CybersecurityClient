@@ -60,7 +60,7 @@ export class MainComponent implements OnInit {
 
   public postMensajeRSA(event){//editado por Sara (estaba vacio) + he añadido RsaService
     const encryptedText = this.RsaService.encrypt(this.name);
-    this.MainService.postMensaje(encryptedText).subscribe(
+    this.MainService.postMensajeRSA(encryptedText).subscribe(
       res => {
         console.log(res);
         this.hola = res;
@@ -72,7 +72,7 @@ export class MainComponent implements OnInit {
   }
 
   public getMensajeRSA(){ //editado por Sara (estaba vacio)
-    this.MainService.getMensaje().subscribe(
+    this.MainService.getMensajeRSA().subscribe(
       (data) => {
         this.frase = this.AESEncDecService.decrypt(data).toString();
         console.log(this.frase);
