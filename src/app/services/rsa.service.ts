@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import MyRsa from 'my-rsa';
-import * as bigint_conversion from 'bigint-conversion';
 
+import MyRsa from 'my-rsa';
+
+const bigint_conversion = require('bigint-conversion');
 const bigintToHex = bigint_conversion.bigintToHex;
 const hexToBigint = bigint_conversion.hexToBigint;
 const textToBigint =  bigint_conversion.textToBigint;
@@ -21,12 +22,9 @@ export class RsaService {
   public async encrypt(mensaje: string) {
 
       if(mensaje==null) mensaje = "Introduce tu nombre";
-
-      console.log("1(msg): ", mensaje); //Comprobacion llega bien el mensaje
+      console.log('Petición GET realizada');
 
       let msg = textToBigint(mensaje); //convierte string a bigint
-
-      console.log("2(msgBigInt): ", msg); //Comprobacion y aqui bien 
 
       if (!rsa.publicKey){
         await rsa.generateKeys(1024);
@@ -35,9 +33,7 @@ export class RsaService {
       let key = rsa.publicKey;
       let e = key.e;
       let n = key.n;
-      let datacypher = MyRsa.encrypt(msg,e,n); //Creo que el error salta aqui
-
-      console.log("3(datacypher): ", datacypher); //Comprobacion y qui no llega
+      let datacypher = MyRsa.encrypt(msg,e,n);
 
       let dataToSend = {
         dataCypher: bigintToHex(datacypher),
@@ -66,19 +62,18 @@ export class RsaService {
     let n = key.n;
 
     mensaje = BigintToText(MyRsa.decrypt(msg, d, n));
-    let msgDecrypted = textToBigint(mensaje);
 
-    let data = {
-      mensajeCliente: bigintToHex(msgDecrypted),
+    let dataCliente = {
+      mensaje: bigintToHex(mensaje),
       d: bigintToHex(d),
       n: bigintToHex(n)
     };
 
-    console.log("Mensaje descifrado: " + data.mensajeCliente);
-    console.log("Private exponent d: " + data.d);
-    console.log("Public modulus n: " + data.n);
+    console.log("Mensaje descifrado: " + dataCliente.mensaje);
+    console.log("Private exponent d: " + dataCliente.d);
+    console.log("Public modulus n: " + dataCliente.n);
 
-    return msg;
+    return mensaje;
   }
 
 }
