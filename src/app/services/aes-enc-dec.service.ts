@@ -22,8 +22,8 @@ export class AESEncDecService {
   }
 
   public decrypt(data) {
-    console.log('Esto es el ciphertext: ', data.dataCipher);
-    var message = CryptoJS.AES.decrypt(data.dataCipher, this.secretKey, { iv: data.iv }).toString(CryptoJS.enc.utf8);
+    console.log('Esto es el ciphertext: ', data.dataCypher);
+    var message = CryptoJS.AES.decrypt(data.dataCypher, this.secretKey, { iv: data.iv }).toString(CryptoJS.enc.utf8);
     var msg = this.hex_to_ascii(message);
     console.log(`Esto es el mensaje recibido desencriptado: ${msg}`);
     return msg;

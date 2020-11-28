@@ -20,7 +20,7 @@ export class MainService {
      return this.http.post(this.env.urlMain + '/text/post', cipherText);
    }
 
-   getMensaje(): Observable<object>{
+   getMensaje(){
      return this.http.get<object>(this.env.urlMain + '/text/msg');
    }
 

@@ -20,7 +20,9 @@ export class MainComponent implements OnInit {
   //************************** AES *******************************
 
   name: string;
+  nameRSA: string;
   frase: string;
+  fraseRSA: string;
   timeout;
   hola;
 
@@ -39,8 +41,8 @@ export class MainComponent implements OnInit {
   public getMensaje(){
     this.MainService.getMensaje().subscribe(
       (data) => {
+        console.log("esto es la data:", data);
         this.frase = this.AESEncDecService.decrypt(data).toString();
-        console.log(this.frase);
       },
       (err) => {
         console.log('err', err);
@@ -59,12 +61,12 @@ export class MainComponent implements OnInit {
   //******************************** RSA *************************************
 
   public postMensajeRSA(event){//editado por Sara (estaba vacio) + he añadido RsaService
-    const encryptedText = this.RsaService.encrypt(this.name);
-    this.MainService.postMensaje(encryptedText).subscribe(
+    const encryptedText = this.RsaService.encrypt(this.nameRSA);
+    this.MainService.postMensajeRSA(encryptedText).subscribe(
       res => {
         console.log(res);
         this.hola = res;
-        this.frase = this.hola.text;
+        this.fraseRSA = this.hola.text;
       },
       err => console.log(err)
     );
@@ -72,10 +74,10 @@ export class MainComponent implements OnInit {
   }
 
   public getMensajeRSA(){ //editado por Sara (estaba vacio)
-    this.MainService.getMensaje().subscribe(
+    this.MainService.getMensajeRSA().subscribe(
       (data) => {
-        this.frase = this.AESEncDecService.decrypt(data).toString();
-        console.log(this.frase);
+        this.fraseRSA = this.RsaService.decrypt(data).toString();
+        console.log(this.fraseRSA);
       },
       (err) => {
         console.log('err', err);
