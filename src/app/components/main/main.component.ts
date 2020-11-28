@@ -2,6 +2,7 @@ import * as CryptoJS from 'crypto-js';
 import { AESEncDecService } from './../../services/aes-enc-dec.service';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
+import {RsaService} from "../../services/rsa.service";
 
 
 @Component({
@@ -11,7 +12,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor(private MainService: MainService, private AESEncDecService: AESEncDecService) { }
+  constructor(private MainService: MainService, private AESEncDecService: AESEncDecService, private RsaService: RsaService) { }
 
   ngOnInit(): void {
   }
@@ -57,12 +58,29 @@ export class MainComponent implements OnInit {
   //**************************************************************************
   //******************************** RSA *************************************
 
-  public postMensajeRSA(event){
+  public postMensajeRSA(event){//editado por Sara (estaba vacio) + he añadido RsaService
+    const encryptedText = this.RsaService.encrypt(this.name);
+    this.MainService.postMensaje(encryptedText).subscribe(
+      res => {
+        console.log(res);
+        this.hola = res;
+        this.frase = this.hola.text;
+      },
+      err => console.log(err)
+    );
 
   }
 
-  public getMensajeRSA(){
-
+  public getMensajeRSA(){ //editado por Sara (estaba vacio)
+    this.MainService.getMensaje().subscribe(
+      (data) => {
+        this.frase = this.AESEncDecService.decrypt(data).toString();
+        console.log(this.frase);
+      },
+      (err) => {
+        console.log('err', err);
+      }
+    );
   }
 
 }
