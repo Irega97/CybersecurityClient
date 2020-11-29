@@ -22,18 +22,23 @@ export class RsaService {
   public async encrypt(mensaje: string) {
 
       if(mensaje==null) mensaje = "Introduce tu nombre";
-      console.log('Petición GET realizada');
+      console.log("1(msg): ", mensaje); //Comprobacion llega bien el mensaje
 
       let msg = textToBigint(mensaje); //convierte string a bigint
 
+      console.log("2(msgHEX): ", msg); //Comprobacion llega bien 
+      
       if (!rsa.publicKey){
-        await rsa.generateKeys(1024);
+        await rsa.generateKeys(1024); //El error esta aqui, falla el generar claves hay que mirar la libreria
       }
 
       let key = rsa.publicKey;
       let e = key.e;
       let n = key.n;
-      let datacypher = MyRsa.encrypt(msg,e,n);
+      console.log("key: ", key, ", e = ", e, ",n = ", n); //Este ya no salta
+      let datacypher = MyRsa.encrypt(msg,e,n); 
+
+      console.log("3(datacypher): ", datacypher); //Este tampoco salta
 
       let dataToSend = {
         dataCypher: bigintToHex(datacypher),
@@ -50,8 +55,9 @@ export class RsaService {
 
   public async decrypt(msgEncrypted) {
     let msgHEX = msgEncrypted.mensajeServer;
+    console.log("1(mensaje cifrado que recibe del Server): ", msgHEX);
     let msg = hexToBigint(msgHEX);
-    console.log('Petición POST realizada! Mensaje cifrado:', msg);
+    console.log("2(msg despues de hex to bigint): ", msg);
 
     if (!rsa.privateKey){
       await rsa.generateKeys(1024);
