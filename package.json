@@ -21,8 +21,8 @@
     "@angular/router": "~10.1.6",
     "bigint-conversion": "^2.1.12",
     "crypto-js": "^4.0.0",
-    "my-rsa": "file:../RSA",
-    "my_rsa": "file:../RSA",
+    "my-rsa": "file:../RSA/",
+    "my_rsa": "file:../RSA/",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
