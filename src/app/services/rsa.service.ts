@@ -17,11 +17,11 @@ export class RsaService {
     this.env = new Environment();
    }
 
-   getPublicServerKey(){
+   getPublicServerKey(): any{
       return this.http.get(this.env.urlMain + '/rsa/server/pubkey');
    }
 
-   async postPublicKey(pubKey: any){
+   sendPublicKey(pubKey){
      return this.http.post(this.env.urlMain + '/rsa/client/pubkey', pubKey);
    }
 

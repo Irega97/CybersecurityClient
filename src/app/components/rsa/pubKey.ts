@@ -10,7 +10,7 @@ export class PublicKey {
     }
 
     encrypt (m: any) {
-        m = this.bc.textToBigint(m);
+        //m = this.bc.textToBigint(m);
         return this.bc.bigintToHex(this.bcu.modPow(m, this.e, this.n));
     }
 
