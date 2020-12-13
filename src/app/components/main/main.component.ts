@@ -6,7 +6,7 @@ import { AESEncDecService } from './../../services/aes-enc-dec.service';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
 import {RsaService} from "../../services/rsa.service";
-import { bigintToHex, hexToBigint, textToBigint } from 'bigint-conversion';
+import { bigintToHex, hexToBigint, textToBigint, bigintToText } from 'bigint-conversion';
 
 
 @Component({
@@ -81,6 +81,7 @@ export class MainComponent implements OnInit {
     setTimeout(
       () => {
         this.frase = '';
+        this.fraseRSA = '';
       }, 3000);
   }
 
@@ -91,13 +92,11 @@ export class MainComponent implements OnInit {
     if(this.pubKeyServer != undefined && this.nameRSA != undefined){
       console.log("Clave server: ", this.pubKeyServer);
       let encryptedText = this.pubKeyServer.encrypt(textToBigint(this.nameRSA));
-      console.log(encryptedText);
+      console.log("Mensaje cifrado: ", encryptedText);
       let data = {dataCypher: encryptedText};
       this.rsaService.postMensajeRSA(data).subscribe(
-        res => {
-          console.log(res);
-          /* this.hola = res;
-          this.fraseRSA = this.hola.text; */
+        (res: any) => {
+          this.fraseRSA = res.text;
         },
         err => console.log(err)
       );
@@ -112,12 +111,21 @@ export class MainComponent implements OnInit {
       console.log(this.pubKeyServer);
     }); */
     /* await this.postPublicKey(this.keyPair.publicKey); */
-    this.rsaService.getMensajeRSA().subscribe((data) => {
-      let encrypted = data.dataCypher;
-      console.log("Mensaje cifrado: ", encrypted);
-      this.fraseRSA = this.rsa.privateKey.decrypt(encrypted);
-      console.log("Mensaje descifrado: ", this.fraseRSA);
-    });
+    let pubKey = {
+      "e": bigintToHex(this.keyPair.publicKey.e),
+      "n": bigintToHex(this.keyPair.publicKey.n)
+    }
+    this.rsaService.sendPublicKey(pubKey).subscribe(() => {
+      this.rsaService.getMensajeRSA().subscribe((data) => {
+        let encrypted = data.dataCypher;
+        console.log("Mensaje cifrado: ", encrypted);
+        let decrypted = this.rsa.privateKey.decrypt(encrypted);
+        console.log("Mensaje descifrado: ", decrypted);
+      });
+    }, error => {
+        console.log("Clave no enviada. Error: ", error);
+    })
+    
   }
 
   public async sendPublicKey(){

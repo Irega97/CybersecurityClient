@@ -1,3 +1,4 @@
+import { bigintToText } from "bigint-conversion";
 import { PublicKey  as publickey} from "../rsa/pubKey";
 
 export class PrivateKey{
@@ -13,10 +14,10 @@ export class PrivateKey{
     }
 
     async decrypt (c: any) {
-        c = this.bc.textToBigint(c)
+        c = this.bc.hexToBigint(c)
         let decrypted = this.bcu.modPow(c, this.d, this.publicKey.n);
-        console.log("decrypted: ", this.bc.bigintToText(decrypted));
-        return this.bc.bigintToText(decrypted);
+        let d = this.bc.bigintToText(decrypted);
+        return d;
     }
 
     sign (m: any) {
