@@ -22,6 +22,11 @@
     "bigint-conversion": "^2.1.12",
     "bigint-crypto-utils": "^3.0.9",
     "crypto-js": "^4.0.0",
+<<<<<<< HEAD
+=======
+    "my-rsa": "file:../RSA/",
+    "my_rsa": "file:../RSA/",
+>>>>>>> 0842af60817c17d5c897dc4d22860f0bc840b443
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
