@@ -4,7 +4,7 @@
     
 <p>
     <label>Nombre:
-    <input type="text" name="mensaje" placeholder="Mensaje" [(ngModel)]="name">  
+    <input type="text" name="mensaje" placeholder="Nombre" [(ngModel)]="name">  
     </label>
 </p>
 
@@ -20,11 +20,11 @@
 </div>
 
 <h2>RSA ENCRYPTATION</h2>
-<form name = 'mensaje' (ngSubmit)="postMensajeRSA($event); deleteMensaje()">
+<form name = 'mensaje' (click)="postMensajeRSA(); deleteMensaje()">
     
 <p>
     <label>Nombre:
-    <input type="text" name="mensaje" placeholder="Mensaje" [(ngModel)]="nameRSA">  
+    <input type="text" name="mensaje" placeholder="Nombre" [(ngModel)]="nameRSA">  
     </label>
 </p>
 

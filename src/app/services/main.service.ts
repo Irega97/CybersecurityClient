@@ -23,12 +23,4 @@ export class MainService {
    getMensaje(){
      return this.http.get<object>(this.env.urlMain + '/text/msg');
    }
-
-  postMensajeRSA(cipherText: object){
-    return this.http.post(this.env.urlMain + '/rsa/post', cipherText);
-  }
-
-  getMensajeRSA(): Observable<object>{
-    return this.http.get<object>(this.env.urlMain + '/rsa/msg');
-  }
 }

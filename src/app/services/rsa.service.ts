@@ -1,87 +1,35 @@
+import { Encrypted } from './../models/encrypted';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import MyRsa from 'my-rsa';
-
-const bigint_conversion = require('bigint-conversion');
-const bigintToHex = bigint_conversion.bigintToHex;
-const hexToBigint = bigint_conversion.hexToBigint;
-const textToBigint =  bigint_conversion.textToBigint;
-const BigintToText = bigint_conversion.bigintToText;
-
-const rsa = new MyRsa();
-let mensaje: string;
+import { Environment } from './environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RsaService {
 
-  constructor() {
-  }
+  private headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
+  env: Environment;
 
-  public async encrypt(mensaje: string) {
+  constructor(private http:HttpClient) {
+    this.env = new Environment();
+   }
 
-      if (mensaje == null) {
-        mensaje = 'Introduce tu nombre';
-      }
-      console.log('1(msg): ', mensaje); // Comprobacion llega bien el mensaje
+   getPublicServerKey(){
+      return this.http.get(this.env.urlMain + '/rsa/server/pubkey');
+   }
 
-      const msg = textToBigint(mensaje); // convierte string a bigint
+   async postPublicKey(pubKey: any){
+     return this.http.post(this.env.urlMain + '/rsa/client/pubkey', pubKey);
+   }
 
-      console.log('2(msgHEX): ', msg); // Comprobacion llega bien
+   postMensajeRSA(cipherText: object){
+     return this.http.post(this.env.urlMain + '/rsa/post', cipherText);
+   }
 
-      if (!rsa.publicKey){
-        await rsa.generateKeys(1024); // El error esta aqui, falla el generar claves hay que mirar la libreria
-      }
-
-      const key = rsa.publicKey;
-      const e = key.e;
-      const n = key.n;
-      console.log('key: ', key, ', e = ', e, ',n = ', n); // Este ya no salta
-      const datacypher = MyRsa.encrypt(msg, e, n);
-
-      console.log('3(datacypher): ', datacypher); // Este tampoco salta
-
-      const dataToSend = {
-        dataCypher: bigintToHex(datacypher),
-        e: bigintToHex(e),
-        n: bigintToHex(n)
-      };
-
-      console.log('GET CLIENT: ' + dataToSend.dataCypher);
-      console.log('GET e CLIENT: ' + dataToSend.e);
-      console.log('GET n CLIENT: ' + dataToSend.n);
-
-      return dataToSend;
-  }
-
-  public async decrypt(msgEncrypted) {
-    const msgHEX = msgEncrypted.mensajeServer;
-    console.log('1(mensaje cifrado que recibe del Server): ', msgHEX);
-    const msg = hexToBigint(msgHEX);
-    console.log('2(msg despues de hex to bigint): ', msg);
-
-    if (!rsa.privateKey){
-      await rsa.generateKeys(1024);
-    }
-
-    const key = rsa.privateKey;
-    const d = key.d;
-    const n = key.n;
-
-    mensaje = BigintToText(MyRsa.decrypt(msg, d, n));
-
-    const dataCliente = {
-      mensaje: bigintToHex(mensaje),
-      d: bigintToHex(d),
-      n: bigintToHex(n)
-    };
-
-    console.log('Mensaje descifrado: ' + dataCliente.mensaje);
-    console.log('Private exponent d: ' + dataCliente.d);
-    console.log('Public modulus n: ' + dataCliente.n);
-
-    return mensaje;
-  }
-
+   getMensajeRSA(){
+     return this.http.get<Encrypted>(this.env.urlMain + '/rsa/msg');
+   }
 }
