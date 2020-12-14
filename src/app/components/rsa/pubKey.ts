@@ -15,6 +15,7 @@ export class PublicKey {
     }
 
     verify (s: any) {
+        s = this.bc.hexToBigint(s);
         return this.bcu.modPow(s, this.e, this.n);
     }
 

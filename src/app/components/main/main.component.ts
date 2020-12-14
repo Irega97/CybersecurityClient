@@ -119,8 +119,8 @@ export class MainComponent implements OnInit {
       this.rsaService.getMensajeRSA().subscribe((data) => {
         let encrypted = data.dataCypher;
         console.log("Mensaje cifrado: ", encrypted);
-        let decrypted = this.rsa.privateKey.decrypt(encrypted);
-        console.log("Mensaje descifrado: ", decrypted);
+        this.fraseRSA = this.rsa.privateKey.decrypt(encrypted);
+        console.log("Mensaje descifrado: ", this.fraseRSA);
       });
     }, error => {
         console.log("Clave no enviada. Error: ", error);
@@ -136,6 +136,20 @@ export class MainComponent implements OnInit {
       }
       this.rsaService.sendPublicKey(data);
       console.log("Clave enviada con éxito");
+    } catch(err) {
+      console.log("Error: ", err);
+    }
+  }
+
+  public async signMessage(){
+    try{
+      this.rsaService.blindSignature({mensaje: this.nameRSA}).subscribe(data => {
+        let signed = data.dataSigned;
+        console.log("Server envia firmado: ", signed);
+        let decrypted = this.pubKeyServer.verify(signed);
+        this.fraseRSA = bigintToText(decrypted);
+        console.log("Mensaje verificado: ", this.fraseRSA);
+      })
     } catch(err) {
       console.log("Error: ", err);
     }

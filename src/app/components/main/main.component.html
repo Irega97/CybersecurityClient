@@ -20,7 +20,7 @@
 </div>
 
 <h2>RSA ENCRYPTATION</h2>
-<form name = 'mensaje' (click)="postMensajeRSA(); deleteMensaje()">
+<form name = 'mensaje'>
     
 <p>
     <label>Nombre:
@@ -29,7 +29,11 @@
 </p>
 
 <p>
-    <button type ="submit">Enviar</button>
+    <button type ="submit" (click)="postMensajeRSA(); deleteMensaje()">Enviar</button>
+</p>
+
+<p>
+    <button type="submit" (click)="signMessage(); deleteMensaje()">Firmar mensaje</button>
 </p>
     
 </form>

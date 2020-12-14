@@ -5,7 +5,7 @@ export class PrivateKey{
     d: BigInt;
     publicKey: publickey;
     bcu = require('bigint-crypto-utils');
-//import * as bc from 'bigint-conversion';
+    //import * as bc from 'bigint-conversion';
     bc = require('bigint-conversion');
     
     constructor (d: BigInt, publicKey: publickey) {
@@ -13,11 +13,10 @@ export class PrivateKey{
         this.publicKey = publicKey;
     }
 
-    async decrypt (c: any) {
+    decrypt (c: any) {
         c = this.bc.hexToBigint(c)
         let decrypted = this.bcu.modPow(c, this.d, this.publicKey.n);
-        let d = this.bc.bigintToText(decrypted);
-        return d;
+        return this.bc.bigintToText(decrypted);
     }
 
     sign (m: any) {

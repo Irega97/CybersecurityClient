@@ -32,4 +32,8 @@ export class RsaService {
    getMensajeRSA(){
      return this.http.get<Encrypted>(this.env.urlMain + '/rsa/msg');
    }
+
+   blindSignature(message){
+     return this.http.post<any>(this.env.urlMain + '/rsa/sign', message);
+   }
 }
