@@ -15,13 +15,11 @@ export class RSA {
 
     let p, q, n, phi;
 
-    // First step is to generate the public modulus as n = p * q
     do {
         p = await this.bcu.prime(Math.floor(bitLength / 2) + 1);
         q =  await this.bcu.prime(Math.floor(bitLength / 2));
 
         n = p * q;
-        // Second step is to compute Euler's totient function
         phi = (p - this._ONE) * (q - this._ONE);
         
 

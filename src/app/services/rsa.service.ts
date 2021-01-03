@@ -1,4 +1,3 @@
-import { Encrypted } from './../models/encrypted';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Environment } from './environment';
@@ -30,7 +29,7 @@ export class RsaService {
    }
 
    getMensajeRSA(){
-     return this.http.get<Encrypted>(this.env.urlMain + '/rsa/msg');
+     return this.http.get<any>(this.env.urlMain + '/rsa/msg');
    }
 
    blindSignature(message){

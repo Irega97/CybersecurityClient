@@ -1,22 +1,41 @@
+const bcu = require('bigint-crypto-utils');
+//import * as bc from 'bigint-conversion';
+const bc = require('bigint-conversion');
+
 export class PublicKey {
-    e: BigInt;
-    n: BigInt;
-    bcu = require('bigint-crypto-utils');
-    //import * as bc from 'bigint-conversion';
-    bc = require('bigint-conversion');
-    constructor(e: any, n: any) {
-      this.e = BigInt(e);
-      this.n = BigInt(n);
+    e: bigint;
+    n: bigint;
+
+    constructor(e: bigint, n: bigint) {
+      this.e = e;
+      this.n = n;
     }
 
-    encrypt (m: any) {
-        //m = this.bc.textToBigint(m);
-        return this.bc.bigintToHex(this.bcu.modPow(m, this.e, this.n));
+    encrypt (m: bigint): bigint | string {
+        const c: bigint = bcu.modPow(m, this.e, this.n);
+        return c;
     }
 
-    verify (s: any) {
-        s = this.bc.hexToBigint(s);
-        return this.bcu.modPow(s, this.e, this.n);
+    verify (s: bigint): bigint {
+        return bcu.modPow(s, this.e, this.n);
+    }
+}
+
+export class RsaBlinder {
+    r: bigint; // factor de cegado
+    pubKey: PublicKey;
+
+    constructor(pubKey: PublicKey) {
+        this.pubKey = pubKey;
+        this.r = bcu.randBetween(this.pubKey.n);
     }
 
+    blind (msg: bigint): bigint {
+        const bm: bigint = ( msg * (this.pubKey.encrypt(this.r) as bigint) ) % this.pubKey.n;
+        return bm;
+    }
+
+    unblind (blindedSignature: bigint): bigint {
+        return blindedSignature * bcu.modInv(this.r, this.pubKey.n);
+    }
 }
