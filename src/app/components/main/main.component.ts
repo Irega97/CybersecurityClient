@@ -1,5 +1,5 @@
-import { PublicKey } from './../rsa/pubKey';
-import { RSA as rsa } from './../rsa/rsa';
+import { PublicKey } from '../../rsa/pubKey';
+import { RSA as rsa } from '../../rsa/rsa';
 import { AESEncDecService } from './../../services/aes-enc-dec.service';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';

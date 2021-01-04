@@ -1,0 +1,21 @@
+<h1>Ciberseguridad</h1>
+
+<h2>NON REPUDIATION SERVICE</h2>
+<form name = 'mensaje'>
+    
+<p>
+    <label>Nombre:
+    <input type="text" name="mensaje" placeholder="Nombre" [(ngModel)]="mensaje">  
+    </label>
+</p>
+
+<p>
+    <button type ="submit" (click)="sendMessage()">Enviar</button>
+</p>
+    
+</form>
+
+<p>Proof of reception: </p>
+<p id="proof-reception">{{this.pr}}</p>
+<p>Proof of key publication: </p>
+<p id="proof-key-pub">{{this.pkp}}</p>

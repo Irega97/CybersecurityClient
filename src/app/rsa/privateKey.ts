@@ -1,5 +1,5 @@
 import { bigintToText } from "bigint-conversion";
-import { PublicKey  as publickey} from "../rsa/pubKey";
+import { PublicKey  as publickey} from "./pubKey";
 
 export class PrivateKey{
     d: BigInt;

@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NonRepudiationComponent } from 'src/app/components/non-repudiation/non-repudiation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent
+    MainComponent,
+    NonRepudiationComponent
   ],
   imports: [
     BrowserModule,
