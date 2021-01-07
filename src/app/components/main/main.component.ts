@@ -1,9 +1,10 @@
+import { RsaBlinder } from './../../rsa/pubKey';
 import { PublicKey } from '../../rsa/pubKey';
 import { RSA as rsa } from '../../rsa/rsa';
 import { AESEncDecService } from './../../services/aes-enc-dec.service';
 import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
-import {RsaService} from "../../services/rsa.service";
+import { RsaService } from "../../services/rsa.service";
 import { bigintToHex, hexToBigint, textToBigint, bigintToText } from 'bigint-conversion';
 
 
@@ -17,11 +18,13 @@ export class MainComponent implements OnInit {
   rsa = new rsa();
   keyPair;
   pubKeyServer;
+  blinder;
 
   constructor(private MainService: MainService, private AESEncDecService: AESEncDecService, private rsaService: RsaService) { }
 
+  //Inicialización claves RSA
   async ngOnInit(): Promise<void> {
-    //GENERAMOS CLAVES EN CLIENTE
+    //GENERAMOS CLAVES PARA RSA EN CLIENTE
     console.log("Generando claves . . .");
     await this.rsa.generateRandomKeys().then(data => {
       this.keyPair = data;
@@ -37,6 +40,9 @@ export class MainComponent implements OnInit {
       this.pubKeyServer = new PublicKey(e,n);
       console.log("e (server): ", this.pubKeyServer.e);
       console.log("n (server): ", this.pubKeyServer.n);
+      
+      //Creamos cegador con clave pública del server para firma ciega
+      this.blinder = new RsaBlinder(this.pubKeyServer);
     });
   }
 
@@ -142,7 +148,7 @@ export class MainComponent implements OnInit {
   // Envíamos mensaje al server para que lo firme. Obtenemos mensaje firmado del servidor y verificamos
   public async signMessage(){
     try{
-      this.rsaService.blindSignature({mensaje: this.nameRSA}).subscribe(data => {
+      this.rsaService.sign({mensaje: bigintToHex(textToBigint(this.nameRSA))}).subscribe(data => {
         let signed = data.dataSigned;
         console.log("Server envia firmado: ", signed);
         let decrypted = this.pubKeyServer.verify(hexToBigint(signed));
@@ -154,6 +160,24 @@ export class MainComponent implements OnInit {
     }
   }
 
+  //FIRMA CIEGA: Cegar el mensaje, que lo firme el server y desencriptarlo
+  public async blindSignature(){
+    try{
+      let blindedMsg = this.blinder.blind(textToBigint(this.nameRSA));
+      console.log("Mensaje cegado (hex): ", bigintToHex(blindedMsg));
+      this.rsaService.sign({mensaje: bigintToHex(blindedMsg)}).subscribe(data => {
+        const signedHex = data.dataSigned;
+        console.log("Server envia firmado: ", signedHex);
+        let sign = this.blinder.unblind(hexToBigint(signedHex));
+        console.log("Mensaje descegado (bigint): ", sign);
+        let decrypted = this.pubKeyServer.verify(sign);
+        this.fraseRSA = bigintToText(decrypted);
+        console.log("Mensaje verificado: ", this.fraseRSA);
+      })
+    } catch(err) {
+      console.log("Error: ", err);
+    }
+  }
 }
 
 

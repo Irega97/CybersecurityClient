@@ -1,5 +1,4 @@
 const bcu = require('bigint-crypto-utils');
-//import * as bc from 'bigint-conversion';
 const bc = require('bigint-conversion');
 
 export class PublicKey {
@@ -24,6 +23,7 @@ export class PublicKey {
 export class RsaBlinder {
     r: bigint; // factor de cegado
     pubKey: PublicKey;
+    _ONE = BigInt(1);
 
     constructor(pubKey: PublicKey) {
         this.pubKey = pubKey;

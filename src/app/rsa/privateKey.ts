@@ -1,11 +1,9 @@
-import { bigintToText } from "bigint-conversion";
 import { PublicKey  as publickey} from "./pubKey";
 
 export class PrivateKey{
     d: BigInt;
     publicKey: publickey;
     bcu = require('bigint-crypto-utils');
-    //import * as bc from 'bigint-conversion';
     bc = require('bigint-conversion');
     
     constructor (d: BigInt, publicKey: publickey) {

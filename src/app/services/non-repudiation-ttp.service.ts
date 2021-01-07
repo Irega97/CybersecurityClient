@@ -13,6 +13,10 @@ export class NonRepudiationTTPService {
     this.url = 'http://localhost:3001/ttp';
   }
 
+  getPubKey(): Observable<any>{
+    return this.http.get(this.url + '/pubkey');
+  }
+
   sendKey(json:any): Observable<any> {
     return this.http.post<any>(this.url, json);
   }

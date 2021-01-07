@@ -17,6 +17,10 @@ export class NonRepudiationBService {
     this.url = this.env.urlMain + '/rsa/nonrep';
   }
 
+  getPublicServerKey(): Observable<any>{
+    return this.http.get(this.env.urlMain + '/rsa/server/pubkey');
+  }
+
   sendMessage(json:any): Observable<any> {
     return this.http.post<any>(this.url, json);
   }

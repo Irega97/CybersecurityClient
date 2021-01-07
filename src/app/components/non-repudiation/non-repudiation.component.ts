@@ -2,7 +2,6 @@ import { PublicKey } from './../../rsa/pubKey';
 import { Component, OnInit } from '@angular/core';
 import * as bc from 'bigint-conversion';
 import { RSA as rsa } from '../../rsa/rsa';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {NonRepudiationBService} from "../../services/non-repudiation-B.service";
 import {NonRepudiationTTPService} from "../../services/non-repudiation-TTP.service";
 import * as sha from 'object-sha';
@@ -16,28 +15,49 @@ export class NonRepudiationComponent implements OnInit {
 
   rsa = new rsa();
 
+  //Claves públicas
   keyPair;
   bPubKey;
   TTPPubKey;
 
+  //AES
   cryptoKey;
   key;
   iv;
 
+  //Mensaje
+  mensaje: string; //Descifrado
+  c: string; //Cifrado
+
   constructor(private nrBService: NonRepudiationBService, private nrTTPService: NonRepudiationTTPService) { }
 
   async ngOnInit() {
+    //Generamos claves para cliente
     this.keyPair = await this.rsa.generateRandomKeys(2048);
-    console.log("n: ", this.keyPair.publicKey.n);
+    console.log("Claves generadas con éxito!");
 
+    //Generamos key para cifrar mensaje con AES
     await crypto.subtle.generateKey({name: 'AES-CBC', length: 256}, true, ['encrypt', 'decrypt'])
       .then(data => this.cryptoKey = data);
 
     await crypto.subtle.exportKey("raw", this.cryptoKey)
       .then(data => this.key = bc.bufToHex(data));
+
+    //Obtenemos clave pública del server B
+    await this.nrBService.getPublicServerKey().subscribe((data) => {
+      this.bPubKey = new PublicKey(bc.hexToBigint(data.e), bc.hexToBigint(data.n));
+      console.log("B Public Key: {e: ", this.bPubKey.e, ", n: ", this.bPubKey.n, "}");
+    })
+
+    //Obtenemos clave pública del server TTP
+    await this.nrTTPService.getPubKey().subscribe((data) => {
+      this.TTPPubKey = new PublicKey(bc.hexToBigint(data.pubKey.e), bc.hexToBigint(data.pubKey.n));
+      console.log("TTP Public Key: {e: ", this.TTPPubKey.e, ", n: ", this.TTPPubKey.n, "}");
+    });  
   }
 
-  /** Encrption method */
+  /** Función encriptar mensaje */
+  //Guarda el mensaje encriptado en c (criptograma)
   async encrypt() {
     this.iv = crypto.getRandomValues(new Uint8Array(16));
     await crypto.subtle.encrypt(
@@ -45,17 +65,15 @@ export class NonRepudiationComponent implements OnInit {
       .then(data => this.c = bc.bufToHex(data));
   }
 
+  //Función que obtiene HASH del objeto pasado coomo parámetro
   async digest(obj) {
     return await sha.digest(obj, 'SHA-256');
   }
 
-  
-  mensaje: string;
-  c: string;
-  po: string;
-  pr: string;
-  pko: string;
-  pkp: string;
+  po: string; //Proof origin
+  pr: string; //Proof receive
+  pko: string; //Proof of key origin
+  pkp: string; //Proof of key publication
 
   /** Enviar mensaje a B */
   async sendMessage() {
@@ -92,14 +110,12 @@ export class NonRepudiationComponent implements OnInit {
     this.nrBService.sendMessage(json).subscribe(
       async data => {
         let res = data; //Recibimos nuevo body (type:2), signature(pr=firma servidor) y clave publica server
-        //Clave pública server
-        this.bPubKey = new PublicKey(bc.hexToBigint(res.pubKey.e), bc.hexToBigint(res.pubKey.n));
         //Descifrar firma para obtener body hasheado
         let decrypted = await this.bPubKey.verify(bc.hexToBigint(res.signature));
         let proofDigest = bc.bigintToHex(decrypted);
         //Hasheamos body para comparar
         let bodyDigest = await this.digest(res.body);
-        if (bodyDigest.trim() === proofDigest.trim()/*  && this.checkTimestamp(res.body.timestamp) */) {
+        if (bodyDigest.trim() === proofDigest.trim()) {
           //Nuevos datos
           this.pr = res.signature; //Firma servidor
           let body = { //Mensaje para el TTP
@@ -107,7 +123,6 @@ export class NonRepudiationComponent implements OnInit {
             src: 'A', 
             dst: 'TTP', 
             key: this.key, 
-            iv: bc.bufToHex(this.iv), 
             timestamp: Date.now()
           };
 
@@ -130,26 +145,18 @@ export class NonRepudiationComponent implements OnInit {
           //Enviamos mensaje al TTP
           this.nrTTPService.sendKey(json).subscribe(
             async data => {
-              //Clave pública TTP
-              this.TTPPubKey = new PublicKey(bc.hexToBigint(data.pubKey.e), bc.hexToBigint(data.pubKey.n));
               //Firma del TTP con el body (mensaje type 4)
               let proofDigest = bc.bigintToHex(await this.TTPPubKey.verify(bc.hexToBigint(data.signature)));
               let bodyDigest = await this.digest(data.body);
-              console.log("1: ", bodyDigest);
-              console.log("2: ", proofDigest);
               if (bodyDigest === proofDigest) {
-                console.log("entro");
                 this.pkp = data.signature;
-                console.log("All data verified");
+                console.log("All data verified by TTP");
                 console.log({
                   pr: this.pr,
                   pkp: this.pkp
                 });
 
-                console.log("pr: ", this.pr);
-                console.log("pkp: ", this.pkp);
-
-                /** Showing values once promises are finished and services are subscribed */
+                /** Muestra valores en el html */
                 document.getElementById('proof-reception').innerHTML = this.pr as string;
                 document.getElementById('proof-key-pub').innerHTML = this.pkp as string;
               }
@@ -160,10 +167,5 @@ export class NonRepudiationComponent implements OnInit {
           console.log("Bad authentication of proof of reception");
         }
       });
-  }
-
-  checkTimestamp(timestamp:number) {
-    const time = Date.now();
-    return (timestamp > (time - 300000) && timestamp < (time + 300000));
   }
 }
