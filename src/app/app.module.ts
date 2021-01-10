@@ -18,7 +18,7 @@ import { NonRepudiationComponent } from 'src/app/components/non-repudiation/non-
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

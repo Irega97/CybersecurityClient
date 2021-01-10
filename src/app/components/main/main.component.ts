@@ -6,7 +6,7 @@ import { MainService } from './../../services/main.service';
 import { Component, OnInit } from '@angular/core';
 import { RsaService } from "../../services/rsa.service";
 import { bigintToHex, hexToBigint, textToBigint, bigintToText } from 'bigint-conversion';
-
+import { io } from 'socket.io-client/build/index';
 
 @Component({
   selector: 'app-main',
@@ -19,6 +19,13 @@ export class MainComponent implements OnInit {
   keyPair;
   pubKeyServer;
   blinder;
+  socket;
+
+  //SECRET SHARED
+  secret: string;
+  slice: string;
+  recovered: string;
+  enableSend:boolean;
 
   constructor(private MainService: MainService, private AESEncDecService: AESEncDecService, private rsaService: RsaService) { }
 
@@ -43,6 +50,36 @@ export class MainComponent implements OnInit {
       
       //Creamos cegador con clave pública del server para firma ciega
       this.blinder = new RsaBlinder(this.pubKeyServer);
+    });
+
+    //Nos conectamos a un socket
+    this.socket = io('http://localhost:3002');
+
+    //Mensaje que confirma la conexión
+    this.socket.on('connected', (data) => {
+      console.log(data);
+    });
+
+    //Recibir trozo de secreto
+    this.socket.on('secret', (data) => {
+      this.slice = data.slice;
+      this.secret = data.secret;
+      console.log("Se ha compartido un nuevo secreto!");
+      console.log("Tu trozo de secreto es: ");
+      console.log({slice: this.slice});
+      this.enableSend = true;
+      this.recovered = "";
+    });
+
+    this.socket.on('request', (data) => {
+      console.log(data);
+    })
+
+    //Recibimos secreto recuperado
+    this.socket.on('recovered', (data) => {
+      this.recovered = data;
+      console.log("Se ha recuperado el secreto: ");
+      console.log({recovered: this.recovered});
     });
   }
 
@@ -176,6 +213,18 @@ export class MainComponent implements OnInit {
       })
     } catch(err) {
       console.log("Error: ", err);
+    }
+  }
+
+  //SHARED SECRET
+  async sendSlice() {
+    if(this.enableSend == true){
+      this.socket.emit('slice', this.slice);
+      console.log("Trozo enviado: ");
+      console.log({slice: this.slice});
+      this.enableSend = false;
+    } else {
+      console.log("Ya has enviado tu trozo");
     }
   }
 }
